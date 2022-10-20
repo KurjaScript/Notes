@@ -1,0 +1,1 @@
+与 vetur 相同，volar 是一个针对 vue 的 vscode 插件，不过与 vetur 不同的是， volar 提供了更强大的功能（**使用的时候需要把 vetur 设置为禁用状态**）

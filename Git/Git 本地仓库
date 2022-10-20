@@ -1,0 +1,70 @@
+#### 1. Git 六行配置
+
+```bash
+git config --global user.name KurjaScript
+
+git config --global user.email kurja0403@gmail.com
+
+git config --global push.default simple
+
+git config --global core.quotepath false
+
+git config --global core.editor "code --wait"
+
+git config --global core.autocrlf input
+```
+
+用以下命令行 确认是否配置成功
+
+```bash
+git config --global --list
+```
+
+#### 2. git init & git add & git commit
+
+##### 2.1 git init
+
+会生成一个`.git`目录， 用来容纳你的代码快照
+
+##### 2.2 git add
+
+`git add 路径`选择需要提交的文件，路径可以是绝对路径，也可以是相对路径 . 或 *
+
+新建文件`.gitignore` ，在里面备注不需要添加的文件名
+
+常见的不需要提交的文件有
+
+```
+node_modules、.DS_Store、 .idea、 .vscode
+```
+
+##### 2.3 git commit
+
+`git commit -v"备注"`，把文件提交到本地仓库
+
+`.git status`可以看到文件的添加状态
+
+`.git log`可以显示从最近到最远的提交日志
+
+`.git reset --hard commit_id`用来版本之间的穿梭
+
+`.git reflog` 用来记录每一次命令
+
+小结：
+
+- `HEAD`指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭，使用命令`git reset --hard commit_id`；
+
+- 穿梭前，用`git log`可以查看提交历史，以便确定要回退到哪个版本。
+- 要重返未来，用`git reflog`查看命令历史，以便确定要回到未来的哪个版本。
+
+#### 3. git branch
+
+`git branch x` 可以创建一个分支`x`
+
+`git checkout x`可以切换到分支`x`
+
+`git branch`查看分支
+
+#### 4. git merge
+
+`git merge x` 合并分支x到当前分支
