@@ -91,6 +91,7 @@ function App() {
     { flag ? 'react' : 'vue'}
     { /* 条件渲染标签组件 */ }
 		{ flag ? <span>this is span</span> : null} 
+    { /* 当 flag 为真，才会显示后面 */ }
     { flag && <span>this is span</span>}
     </div>
   )
