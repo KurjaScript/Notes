@@ -113,3 +113,46 @@ function swap<T, U>(tuple: [T, U]):[U, T] {
 第 1 项上全是 string 的方法。
 
 ![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/34d4c780556344999bdc460f04bf11d7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+#### 2.4 函数副作用操作
+
+泛型不仅可以很方便地约束函数的参数类型，还可以用在函数执行副作用操作的时候。
+
+假如有一个通用的异步请求方法，想根据不同的 url 请求返回不同类型的数据。
+
+```typescript
+function request(url: string) {
+  return fetch(url).then(res => res.json())
+}
+```
+
+调用一个获取用户信息的接口：
+
+```typescript
+request('user/info').then(res => {
+  console.log(res)
+})
+```
+
+这个时候的返回结果 res 就是一个 any 类型，非常讨厌。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f611ca6aa43547a9adf9dea388b9579a~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+**我们希望调用 API 都清晰地知道返回类型是什么数据结构**，就可以这么做：
+
+```typescript
+interface UserInfo {
+  name: string
+  age: number
+}
+function request<T>(url: string): Promise<T> {
+  return fetch(url).then(res => res.json())
+}
+request<UserInfo>('user/info').then(res => {
+  console.log(res)
+})
+```
+
+这样就能很舒服地拿到接口返回的数据类型，开发效率大大提高：
+
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d85a3ad4567f4bc4bdca004853755192~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
