@@ -65,3 +65,18 @@ function print<T>(arg: T) {
 const myPrint: Iprint<number> = print
 ```
 
+#### 2.2 默认参数
+
+如果要给泛型加默认参数，可以这么写：
+
+```typescript
+interface Iprint<T = number> {
+  (arg: T): T
+}
+function print<T>(arg: T) {
+  console.log(arg)
+  return arg
+}
+const myPrint: Iprint = print
+```
+
