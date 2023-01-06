@@ -258,3 +258,20 @@ const k1: IKeyValue<number, string> = {key: 18, value: 'lin'}
 const k2: IKeyValue<string, number> = {key: 'lin', value: 18}
 ```
 
+#### 4.3 泛型定义数组
+
+定义一个数组，我们之前的习惯是这么写的：
+
+```typescript
+const arr: number[] = [1,2,3]
+```
+
+现在这么写也可以：
+
+```typescript
+const arr: Array<number> = [1,2,3]
+```
+
+数组项写错类型，报错
+
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6b226f0366594f9bac2d807bfd35f46c~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
