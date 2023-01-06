@@ -275,3 +275,47 @@ const arr: Array<number> = [1,2,3]
 数组项写错类型，报错
 
 ![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6b226f0366594f9bac2d807bfd35f46c~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+#### 4.4  泛型约束后端接口参数类型
+
+我们来看一个泛型非常有助于项目开发的用法，约束后端接口参数类型。
+
+```typescript
+import axios from 'axios'
+
+interface API {
+  '/book/detail': {
+    id: number,
+  },
+  '/book/comment': {
+    id: number
+    comment: string
+  }
+  ...
+}
+  
+function request<T extends keyof API>(url: T, obj: API[T]) {
+  return axios.post(url, obj)
+}
+
+request('/book/comment', {
+  id: 1,
+  comment: '非常棒！'
+})
+```
+
+这样在调用接口的时候就会有提醒，比如：
+
+路径写错了：
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5975636be58c4226aaa057dff1b42350~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+参数类型写错了：
+
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/75ae2936855341e58f4385d81f5c17c9~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+参数传少了：
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7b276689a7804162a924661e169aa67a~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+这使得开发效率大大提高！
