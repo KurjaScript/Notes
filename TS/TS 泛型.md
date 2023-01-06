@@ -80,3 +80,36 @@ function print<T>(arg: T) {
 const myPrint: Iprint = print
 ```
 
+#### 2.3 处理多个函数参数
+
+现在有这么一个函数，传入一个只有两项的元组，交换元组的第 0 项和第 1 项，返回这个元组。
+
+```typescript
+function swap(tuple) {
+  return [tuple[1], tuple[0]]
+}
+```
+
+这样写就丧失了类型，用泛型改造一下。用 T 代表第 0 项的类型，用 U 代替第 1 项的类型。
+
+```typescript
+function swap<T, U>(tuple: [T, U]):[U, T] {
+  return [tuple[1], tuple[0]]
+}
+```
+
+这样就实现了元组第 0 项和第 1 项类型的控制。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a9a08e24f1a481e81fa89d3e8220dcc~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+传入的参数里，第 0 项为 string 类型，第 1 项为 number 类型。
+
+在交换函数的返回值里，第 0 项为 number 类型，第 1 项为 string 类型。
+
+第 0 项上全是 number 的方法。
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b1766430bbdc42bbb53687354af65795~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+第 1 项上全是 string 的方法。
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/34d4c780556344999bdc460f04bf11d7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp)
