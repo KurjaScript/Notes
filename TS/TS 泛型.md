@@ -156,3 +156,45 @@ request<UserInfo>('user/info').then(res => {
 这样就能很舒服地拿到接口返回的数据类型，开发效率大大提高：
 
 ![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d85a3ad4567f4bc4bdca004853755192~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+### 3. 约束泛型
+
+假设有这样一个函数，打印传入参数的长度：
+
+```typescript
+function printLength<T>(arg: T): T {
+  console.log(arg.length)
+  return arg
+}
+```
+
+因为不确定 T 是否有 length  属性，会报错：
+
+![](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/836e0afdd34b42f2aec13628168dfd23~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+可以和 interface 结合，来约束类型。
+
+```typescript
+interface ILength {
+  length: number
+}
+function printLength<T extends ILength>(arg: T): T {
+  console.log(arg.length)
+  return arg
+}
+```
+
+这其中的关键就是 `<T extends ILength>`，让这个泛型继承接口 `ILength`，这样就能约束泛型。
+
+我们定义的变量一定要有 length 属性，比如下面的 str、arr 和 obj，才可以通过 TS 编译。
+
+```typescript
+const str = printLength('lin')
+const arr = printLength([1,2,3])
+const obj = printLength({length: 10})
+```
+
+这个例子也再次印证了 interface 的 `duck typing`（类？）。只要你有 length 属性，都符合约束，那就不管你是 str、arr 还是 obj，都没问题。当然，如果定义一个不包含 length 属性的变量，比如数字，就会报错：
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a8261afe4e7429a804c980d3c1eede7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
