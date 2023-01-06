@@ -319,3 +319,17 @@ request('/book/comment', {
 ![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7b276689a7804162a924661e169aa67a~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
 
 这使得开发效率大大提高！
+
+### 小结
+
+泛型（Generics），从字面上理解，泛型就是一般的，广泛的。
+
+泛型是指在定义函数、接口或类的时候，不预先指定具体类型，而是在使用的时候再指定类型。
+
+泛型中的 `T` 就像一个占位符、或者说一个变量，在使用的时候可以把定义的类型**像参数一样传入**，它可以**原封不动地输出**。
+
+泛型**在成员之间提供有意义的约束**，这些成员可以是：函数参数、函数返回值、类的实例成员、类的方法等。
+
+用一张图来总结一下泛型的好处：
+
+![](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bc01a49496f848e29c2fa8883ebcf5ec~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
