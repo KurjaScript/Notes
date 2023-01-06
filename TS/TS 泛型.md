@@ -198,3 +198,48 @@ const obj = printLength({length: 10})
 
 ![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a8261afe4e7429a804c980d3c1eede7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
 
+### 4. 泛型的一些应用
+
+使用泛型，可以在定义函数、接口或类的时候，不预先指定具体类型，而是使用的时候再指定类型。
+
+#### 4.1 泛型约束类
+
+定义一个栈，有入栈和出栈两个方法，如果想入栈和出栈的元素类型统一，可以这么写：
+
+```typescript
+class Stack<T> {
+	private data: T[] = []
+  push(item:T) {
+    return this.data.push(item)
+  }
+  pop():T | undefined {
+    return this.data.pop()
+  }
+}
+```
+
+在定义实例的时候写类型，比如，入栈和出栈都要是 number 类型，就这么写：
+
+```typescript
+const s1 = new Stack<number>()
+```
+
+这样，入栈一个字符串就会报错：
+
+![](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b6bf0b6eba6a40a486b1a74d490dd63a~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+这是非常灵活的，如果需求变了，入栈和出栈都要是 string 类型，在定义实例的时候改一下就好了：
+
+```typescript
+const s1 = new Stack<string>()
+```
+
+这样，入栈一个数字就会报错：
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8f15fa43b864d47800da8a24c85bd5d~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+特别注意的是，**泛型无法约束类的静态成员。**
+
+给 pop 方法定义 `static` 关键字，就报错了
+
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8843a0a665f34484b4b13fab67bcc0a7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
