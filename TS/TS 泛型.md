@@ -243,3 +243,18 @@ const s1 = new Stack<string>()
 给 pop 方法定义 `static` 关键字，就报错了
 
 ![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8843a0a665f34484b4b13fab67bcc0a7~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?)
+
+#### 4.2 泛型约束接口
+
+使用泛型，也可以对 interface 进行改造，让 interface 更灵活。
+
+```typescript
+interface IkeyValue<T, U> {
+  key: T
+  value: U
+}
+
+const k1: IKeyValue<number, string> = {key: 18, value: 'lin'}
+const k2: IKeyValue<string, number> = {key: 'lin', value: 18}
+```
+
