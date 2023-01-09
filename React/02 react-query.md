@@ -150,3 +150,107 @@ function Todos() {
 
 ```
 
+#### 4.2 useQuery（查）查询数据（Get）
+
+##### 基本使用方法
+
+```jsx
+function Todos() {
+  // useQuery 的第一个参数，作为 useQuery 查询的唯一标识，该值唯一
+  // 可以是 string、array、object
+  // string -> useQuery('todos', ...) queryKey === ['todos']
+  // array -> useQuery(['todo', 5, {preview: true}], ...) queryKey === ['todo', 5, {preview: true}]
+  const { isLoading, isError, data, error } = useQuery('todos', fetchTodoList)
+  
+  if (isLoading) {
+    return <span>Loading...</span>
+  }
+  
+  if (isError) {
+    return <span>Error: {error.message}</span>
+  }
+  
+  // also status === 'success', but "else" logic works,too
+  return (
+  	<ul>
+    	{data.map(todo => {
+        <li key={todo.id}>{todo.title}</li>
+      })}
+    </ul>
+  )
+}
+```
+
+##### 传递参数
+
+```jsx
+function Todos({ completed }) {
+  // useQuery(['todo', {status: 1, page: 1}], ...) query === ['todo', { status: 1, page: 1 }]
+  // 传递参数给 "fetchTodoList" 使用
+  const queryInfo = useQuery(['todos', { status: 1, page: 1 }], fetchTodoList)
+}
+
+// 函数参数
+// key -> "todos"
+// status -> 1 page -> 1
+function fetchTodoList(key, { status, page }) {
+  return new Promise()
+  // ...
+}
+```
+
+该库还实现可常用的查询操作：[分页查询、无限滚动](https://tanstack.com/query/v4/?from=reactQueryV3&original=https://react-query-v3.tanstack.com/)
+
+##### useMutation（增、改、查）操作数据（Post, Delete, Patch, Put）
+
+```jsx
+// 当 "mutate()" 被调用时，执行 "pingMutation"
+const PingPong = () => {
+  const [mutate, { status, data, error }] = useMutation(pingMutation)
+  const onPing = async () => {
+    try {
+      const data = await mutate()
+      console.log(data)
+    } catch {
+      
+    }
+  }
+  return <button onClick={onPing}>Ping</button>
+}
+```
+
+传递参数
+
+```jsx
+// "mutate({title})" 就会将参数 "title" 传递给 "createTodo" 函数了
+const createTodo = ({ title }) => {
+  console.log('title', title)
+}
+
+const CreateTodo = () => {
+  const [title, setTitle] = useState('')
+  const [mutate] = useMutation(createTodo)
+  const onCreateTodo = async e => {
+    e.preventDefault()
+    try {
+      await mutate({title})
+      // Todo was successfully created
+    } catch (error) {
+      // Uh oh, something went wrong
+    }
+  }
+  
+  return (
+    <form onSubmit={onCreateTodo}>
+    	<input 
+        type="text"
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+        />
+      <br />
+      <button type="submit">Create Todo</button>
+    </form>
+  )
+}
+```
+
