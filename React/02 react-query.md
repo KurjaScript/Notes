@@ -67,3 +67,86 @@ function App() {
 1. 多个组件请求同一个 query 时只发出一个请求；
 2. 缓存数据失效/更新策略（判断缓存何时失效，失效后自动请求数据）；
 3. 对失效数据垃圾清理。
+
+### 4. React-Query 中的三个重要知识点
+
+#### 4.1 常用参数配置
+
+- staleTime 重新获取数据的时间间隔 默认0
+
+- cacheTime 数据缓存时间 默认 1000 60 5 5分钟
+- retry 失败重试次数 默认 3次
+
+- refetchOnWindowFocus 窗口重新获得焦点时重新获取数据 默认 false
+
+- refetchOnReconnect 网络重新链接
+
+- refetchOnMount 实例重新挂载
+
+- enabled 如果为 “false” ，“useQuery”不会触发，需要使用其返回的“refetch”来触发操作。
+
+如何全局配置呢？如下：
+
+```jsx
+import { ReactQueryConfigProvider, ReactQueryProviderConfig } from 'react-query'
+
+const queryConfig: ReactQueryProviderConfig = {
+  /**
+  	* refetchOnWindowFocus 窗口获得焦点时重新获取数据
+  	* staleTime 过多久重新获取服务端数据
+  	*cacheTime 数据缓存时间 默认是 5 * 60 * 1000 5分钟
+  	*/
+  queries: {
+    refetchOnwindowFocus: true,
+    staleTime: 5 * 60 * 1000,
+    retry: 0
+  },
+};
+
+ReactDOM.render(
+  <ReactQueryConfigProvider config={queryConfig}>
+  	<App />
+  </ReactQueryConfigProvider>
+  document.getElementById('root')
+);
+
+function Todos() {
+  // 第三个参数即可传参了
+  // "enabled" 参数为 false，不会自动发起请求，而是需要调用 "refetch" 来触发
+  const {
+    isIdle,
+    isLoading,
+    isError,
+    data,
+    error,
+    refetch,
+    isFetching
+  } = useQuery('todos', fetchTodoList, {
+    enabled: false,
+  })
+  
+  return (
+  	<>
+    	<button onClick={() => refetch()}>Fetch Todos</button>
+    	{isIdle ? (
+  			'Not ready...'
+  		) : isLoading ? (
+  			<span>Loading...</span>
+  		) : isError ? (
+  			<span>Error: {error.message}</span>
+  		): (
+  			<>
+    			<ul>
+    				{data.map(todo => (
+      				<li key={todo.id}>{todo.title}</li>
+      			))}
+    			</ul>
+    			<div>{isFetching ? 'Fetching...' : null}</div>
+    		</>
+  		)}
+    </>
+  )
+}
+
+```
+
