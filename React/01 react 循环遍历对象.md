@@ -97,3 +97,131 @@ export default function App() {
 
 由于性能的原因，React 需要在内部使用 `key` 属性。这有助于库确保只重新渲染已经改变的数组元素。说到这里，你不会看到使用索引和一个稳定、唯一的标识符之间有任何明显的区别，除非你要处理成千上万的数组元素。
 
+
+
+### 2. 遍历对象的值
+
+在 React 中，循环遍历对象的值：
+
+1. 使用 `Object.values()` 方法得到对象的值组成的数组。
+2. 使用 `map()` 方法迭代对象值组成的数组。
+
+```jsx
+export default function App() {
+  const employee = {
+    id: 1,
+    name: 'Bob',
+    salary: 123,
+  };
+  return (
+  	<div>
+    {/* interate object VALUES */}
+      {Object.values(employee).map((value, index) => {
+        return (
+        	<div key={index}>
+          	<h2>{value}</h2>
+            <hr />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+#### Object.values
+
+我们使用 `Object.values` 方法得到对象的值组成的数组。
+
+```jsx
+const employee = {
+  id: 1,
+  name: 'Bob',
+  salary: 123,
+};
+// [1,'Bob',123]
+console.log(Object.values(employee))
+```
+
+如果你只想渲染对象的值，你可以使用此方法直接访问它们。
+
+#### Object.entries
+
+你也可以使用 `Object.entries` 方法来返回对象的键值对数组。
+
+```jsx
+export default function App() {
+  const employee = {
+    id: 1,
+    name: 'Bob',
+    salary: 123,
+  }
+  return (
+    <div>
+    	{Object.entries(employee).map((key, value) => {
+        return (
+        	<div key={key}>
+          	<h2>
+            	{key}: {employee[key]}
+            </h2>
+            <hr />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+下面是 `Object.entries()` 方法的输出。
+
+```jsx
+const employee = {
+  id: 1,
+  name: 'Bob',
+  salary: 123
+}
+
+// [
+// 		['id', 1],
+// 		['name','Bob'],
+//		['salary',123],
+// ]
+const result = Object.entries(employee)
+console.log(result)
+```
+
+该方法返回一个包含键值对数组的数组。
+
+#### Array.forEach()
+
+另一种方法是使用 `Array.forEach()` 方法来迭代对象的键，并将 JSX 元素推送到一个数组中，然后我们进行渲染。
+
+```jsx
+export default function App() {
+	const employee = {
+    id: 1,
+    name: 'Bob',
+    salary: 123,
+  };
+  
+  const results = []
+  
+  Object.keys(employee).forEach(key => {
+    results.push(
+    	<h2 key={key}>
+      	{key}: {employee[key]}
+      </h2>
+    )
+  })
+  
+  return (
+  	<div>
+    	{results}
+    </div>
+  )
+}
+```
+
+`Array.forEach()` 方法在每个键上都会被调用，然而 `forEach` 方法返回 `undefined`，所以我们不能直接在 JSX 代码中使用它。相反，我们把 JSX 元素推到一个数组中，然后再进行渲染。这是一个比较间接的方法，你不会在 `React` 应用中经常看到它的作用。
+
