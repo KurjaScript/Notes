@@ -150,3 +150,54 @@ function Bulbs() {
 状态一旦改变，React 就会重新渲染组件，`on`变量获取新的状态值。
 
 状态更新作为对提供一些新信息的事件的响应。这些事件包括按钮单击、HTTP 请求完成等，确保在事件回调或其他 Hook 回调中调用状态更新函数。
+
+##### 使用回调更新状态
+
+当使用前一个状态计算新状态时，可以使用回调更新该状态。
+
+```jsx
+const [state, setState] = useState(initialState)
+...
+setState(prevState => nextState)
+...
+```
+
+下面是一些事例：
+
+```jsx
+// Toggle a boolean
+const [toggle, setToggled] = useState(false)
+setToggled(toggled => !toggled)
+
+// Increase a counter
+const [count, setCount] = useState(0)
+setCount(count => count + 1)
+
+// Add an item to array
+const [items, setItems] = useState([])
+setItems(items => [...items,'New Item'])
+```
+
+接着，通过这种方式重新实现上面电灯的示例：
+
+```jsx
+import React, { useState } from 'react'
+
+function Bulbs() {
+  const [on, setOn] = useState(false)
+  const lightSwitch = () => setOn(on => !on)
+  
+  return (
+  	<>
+    	<div className={ on ? 'bulb-on' : 'bulb-off'}></div>
+    	<button onClick={lightSwitch}>开灯/关灯</button>
+    </>
+  )
+}
+```
+
+打开 [codesandbox](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-state-update-functional-dhesq) 自行尝试一下。
+
+![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/11/18/16e7bd201900e014~tplv-t2oaga2asx-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+`setOn(on => !on)`使用函数更新状态。
