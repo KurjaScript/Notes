@@ -48,3 +48,20 @@ function Bulbs() {
 在`Bulbs`函数的第一行调用`useState()`（暂时不要考Hook的参数和返回值）。 重要的是，在组件内部调用 Hook 会使该函数成为有状态的函数组件。
 
 启用状态后，下一步是初始化它。
+
+#### 1.2 初始化状态
+
+始时，灯泡关闭，对应到状态应使用 `false` 初始化 Hook：
+
+```jsx
+import React, { useState } from 'react';
+
+function Bulbs() {
+  ... = useState(false);
+  return <div className="bulb-off" />;
+}
+```
+
+`useState(false)` 用 `false` 初始化状态。
+
+启用和初始化状态之后，如何读取它？来看看 `useState(false)` 返回什么。
