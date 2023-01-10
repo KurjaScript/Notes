@@ -65,3 +65,40 @@ function Bulbs() {
 `useState(false)` 用 `false` 初始化状态。
 
 启用和初始化状态之后，如何读取它？来看看 `useState(false)` 返回什么。
+
+#### 1.3 读取状态
+
+当 hook `useState(initialState)` 被调用时，当它返回一个数组，该数组的第一项是状态值。
+
+```jsx
+const stateArray = useState(false);
+stateArray[0]; // => 状态值
+```
+
+读取组件的状态
+
+```jsx
+function Bulbs() {
+	const stateArray = useState(false)
+  return <div className={stateArray[0] ? 'bulb-on' : 'bulb-off'}></div>
+}
+```
+
+`Bulbs` 组件状态初始化为 `false`，可以找[codesandbox](https://codesandbox.io/s/react-usestate-stateless-component-mg2yr) 尝试一下。
+
+`useState(false)` 返回一个数组，第一项包含状态值，该值当前为 `false` （因为状态已用 `false` 初始化）。
+
+可以使用数组解构来将状态提取到变量 `on` 上：
+
+```jsx
+import React, { useState } from 'react';
+
+function Bulbs() {
+  const [on] = useState(false);
+  return <div className={on ? 'bulb-on' : 'bulb-off'} />;
+}
+```
+
+`on` 状态变量保存状态值。
+
+状态已经启用并初始化，现在可以读取它了。
