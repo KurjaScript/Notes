@@ -102,3 +102,51 @@ function Bulbs() {
 `on` 状态变量保存状态值。
 
 状态已经启用并初始化，现在可以读取它了。
+
+#### 1.4 更新状态
+
+##### 用值更新状态
+
+`useState(initialState)` 返回一个数组，其中第一项是状态值，第二项是一个更新状态的函数。
+
+```jsx
+const [state, setState] = useState(initialState);
+
+// 将状态更改为 'newState' 并触发重新渲染
+setState(newState);
+
+// 重新渲染 state 后的值为 newState
+```
+
+要更新组件的状态，请使用状态调用更新器函数 `setState(newState)`。组件重新渲染后，状态接收新值 `newState`。
+
+当点击 `开灯` 按钮时将灯泡开关状态更新为 `true` ，点击 `关灯` 时更新为 `false`。
+
+```jsx
+import React, { useState } from 'react';
+
+function Bulbs() {
+  const [on, setOn] = useState(false);
+
+  const lightOn = () => setOn(true);
+  const lightOff = () => setOn(false);
+
+  return (
+    <>
+      <div className={on ? 'bulb-on' : 'bulb-off'} />
+      <button onClick={lightOn}>开灯</button>
+      <button onClick={lightOff}>关灯</button>
+    </>
+  );
+}
+```
+
+打开 [codesandbox](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-state-update-lxj5i) 自行尝试一下。
+
+![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/11/18/16e7bd1b29bf501f~tplv-t2oaga2asx-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+单击开灯按钮时，`lightOn()`函数将`on`更新为`true`: `setOn(true)`。单击关灯时也会发生相同的情况，只是状态更新为`false`。
+
+状态一旦改变，React 就会重新渲染组件，`on`变量获取新的状态值。
+
+状态更新作为对提供一些新信息的事件的响应。这些事件包括按钮单击、HTTP 请求完成等，确保在事件回调或其他 Hook 回调中调用状态更新函数。
