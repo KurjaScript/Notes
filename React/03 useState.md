@@ -201,3 +201,11 @@ function Bulbs() {
 ![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/11/18/16e7bd201900e014~tplv-t2oaga2asx-zoom-in-crop-mark:4536:0:0:0.awebp)
 
 `setOn(on => !on)`使用函数更新状态。
+
+#### 1.5 小结
+
+- 调用 `useState()` Hook 来启用函数组件中的状态。
+- `useState(initialValue)` 的第一个参数 `initialValue` 是状态的初始值。
+- `[state, setState] = useState(initialValue)` 返回一个包含 2 个元素的数组：状态值和状态函数。
+- 使用新值调用状态更新器函数 `setState(newState)` 更新状态。或者，可以使用一个回调 `setState(prev => next)` 来调用状态更新器，该回调将返回基于先前状态的新状态。
+- 调用状态跟新器后，React 确保重新渲染组件，以使新状态变为当前状态。
