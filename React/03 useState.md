@@ -421,3 +421,76 @@ function DelayedCount() {
 现在 `setCount(count => count + 1)` 在 `delay()` 中正确更新计数状态。React 确保将最新状态值作为参数提供给更新状态函数，这时闭包的问题解决了。
 
 [打开演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-async-fixed-5y2o8)，快速单击按钮。 延迟过去后，`count` 能正确表示点击次数。
+
+#### 4.3 复杂状态管理
+
+`useState()` 用于管理简单状态。对于复杂的状态管理，可以使用 `useReducer()` Hook。它为需要多个状态操作的状态提供了更好的支持。
+
+假设需要编写一个喜欢的电影列表。用户可以添加电影，也可以删除电影，实现方式大致如下：
+
+```jsx
+import React, { useState } from 'react'
+
+function FavoriteMovies() {
+  const [movies, setMovies] = useState([{name: 'Heat'}])
+  
+  const add = movie => setMovies([...movies, movie])
+  
+  const remove = index => {
+    setMovies([
+      ...movies.slice(0, index),
+      ...movies.slice(index + 1)
+    ])
+  }
+  
+  return (
+  	// User add(movie) and remove(index)...
+  )
+}
+```
+
+[尝试演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-complex-state-5dplv)：添加和删除自己喜欢的电影。
+
+![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/11/18/16e7bd30c8e49190~tplv-t2oaga2asx-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+状态列表需要几个操作：添加和删除电影，状态管理细节使组件混乱。
+
+更好的解决方案是将复杂的状态管理提取到 `reducer` 中：
+
+```jsx
+import React, { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch(action.type) {
+    case 'add':
+      return [...state,action.item]
+    case 'remove':
+      return [
+        ...state.slice(0, action.index),
+        ...state.slice(action.index + 1)
+      ]
+    default:
+      throw new Error()
+  }
+}
+
+function FavoriteMovies() {
+  const [state, dispatch] = useReducer(reducer, [name: 'Heat'])
+  return (
+  	// Use dispatch({ type: 'add', item: movie })
+    // and dispatch({ type: 'remove', index })...
+  )
+}
+
+```
+
+`reducer` 管理电影的状态，有两种操作类型：
+
+- `add` 将新电影插入列表
+- `remove` 从列表中按索引删除电影
+
+[尝试演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-complex-state-usereducer-gpw87)并注意组件功能没有改变。但是这个版本的 `<FavoriteMovies>` 更容易理解，因为状态管理已经被提取到 `reducer` 中。
+
+还有一个好处：可以将 `reducer` 提取到一个单独的模块中，并在其他组件中重用它。另外，即使没有组件，也可以对 `reducer` 进行单元测试。
+
+这就是关注点分离的威力：组件渲染 UI 并响应事件，而 `reducer` 执行状态操作。
