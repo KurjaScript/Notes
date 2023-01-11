@@ -330,3 +330,37 @@ function Bulbs() {
 }
 ```
 
+`useState()` **的无效调用**
+
+在条件中调用 `useState()` 是不正确的：
+
+```jsx
+function Switch({ isSwitchEnabled }) {
+  if(isSwitchEnabled) {
+    // Bad
+    const [on, setOn] = useState(false)
+  }
+  // ...
+}
+```
+
+在嵌套函数中调用 `useState()` 也是不对的：
+
+```jsx
+function Switch() {
+  let on = false
+  let setOn = () => {}
+  
+  function enableSwitch() {
+    // Bad
+    [on, setOn] = useState(false)
+  }
+  
+  return (
+  	<button onClick={enableSwitch}>
+    	Enable light switch state
+    </button>
+  )
+}
+```
+
