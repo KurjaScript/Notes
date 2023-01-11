@@ -279,3 +279,54 @@ function MyComponent({ bigJsonData }) {
 
 `getInitialState()` 仅在初始渲染时执行一次，以获得初始状态。在以后的组件渲染中，不会再调用 `getInitialState()`，从而跳过昂贵的操作。
 
+### 4. useState() 中的坑
+
+我们已经初步掌握了如何使用 `useState()` ，接下来介绍使用 `useState()` 可能遇到的常见问题。
+
+#### 4.1 在哪里调用 `useState()`
+
+在使用 `useState()` Hook 时，必须遵守 Hook的规则：
+
+1. 仅顶层调用 Hook：不能在循环、条件、嵌套函数等中调用 `useState()` 。在多个 `useState()` 调用中，渲染之间的调用顺序必须相同。
+2. 仅从 React 函数调用 Hook：必须仅在函数组件或自定义钩子内部调用 `useState()`。
+
+来看看 `useState()` 正确用法和错误用法的例子。
+
+**有效调用** `useState()`
+
+`useState()` 在函数组件的顶层被正确调用:
+
+```jsx
+function Bulbs() {
+  // Good
+  const [on, setOn] = useState(false)
+	// ...
+}
+```
+
+以相同的顺序正确地调用多个 `useState()` 调用：
+
+```jsx
+function Bulbs() {
+  // Good
+  const [on, setOn] = useState(false)
+  const [count, setCount] = useState(1)
+	// ...
+}
+```
+
+`useState()` 在自定义钩子的顶层被正确调用
+
+```jsx
+funtion toggleHook(initial) {
+  // Good
+  const [on, setOn] = useState(initial)
+  return [on, () => setOn(!on)]
+}
+
+function Bulbs() {
+  const [on, toggle] = toggleHook(false)
+  // ...
+}
+```
+
