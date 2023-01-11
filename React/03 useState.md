@@ -222,7 +222,7 @@ function MyComponent() {
 }
 ```
 
-需要注意的是，要确保对 `useState()` 的多次调用在渲染之间始终保持相同的顺序（后面会讲）。
+需要注意的是，要确保对 `useState()` 的多次调用在渲染之前始终保持相同的顺序（后面会讲）。
 
 我们添加一个按钮 `添加灯泡`，并添加一个新状态来保存灯泡数量，单击该按钮时，将添加一个新灯泡。
 
@@ -287,7 +287,7 @@ function MyComponent({ bigJsonData }) {
 
 在使用 `useState()` Hook 时，必须遵守 Hook的规则：
 
-1. 仅顶层调用 Hook：不能在循环、条件、嵌套函数等中调用 `useState()` 。在多个 `useState()` 调用中，渲染之间的调用顺序必须相同。
+1. 仅顶层调用 Hook：不能在循环、条件、嵌套函数等中调用 `useState()` 。在多个 `useState()` 调用中，渲染之前的调用顺序必须相同。
 2. 仅从 React 函数调用 Hook：必须仅在函数组件或自定义钩子内部调用 `useState()`。
 
 来看看 `useState()` 正确用法和错误用法的例子。
@@ -364,3 +364,60 @@ function Switch() {
 }
 ```
 
+#### 4.2 过时状态
+
+闭包是一个从外部作用域捕获变量的函数。
+
+闭包（例如事件处理程序，回调）可能会从函数组件作用域中捕获状态变量。由于状态变量在渲染之间变化，因此闭包应捕获具有最新状态值的变量。否则，如果闭包捕获了过时的状态值，则可能会遇到过时的状态问题。
+
+来看看一个过时的状态是如何表现出来的。组件`<DelayedCount>` 延迟 3 秒计数按钮点击次数。
+
+```jsx
+function DelayedCount() {
+  const [count, setCount] = useState(0)
+  
+  const handleClickAsync = () => {
+    setTimeout(function delay() {
+      setCount(count + 1)
+    }, 3000)
+  }
+  
+  return (
+  	<div>
+    	{count}
+      <button onClick={handleClickAsync}>Increase async</button>
+    </div>
+  )
+}
+```
+
+[打开演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-async-broken-uzzvg)，快速多次点击按钮。`count` 变量不能正确记录实际点击次数，有些点击被吃掉。
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/11/18/16e7bd2b26e6b0ac~tplv-t2oaga2asx-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+`delay()` 是一个过时的闭包，它从初始渲染（使用 0 初始化时）捕获了过时的 `count` 变量。
+
+为了解决这个问题，使用函数方法来更新 `count` 状态：
+
+```jsx
+function DelayedCount() {
+  const [count, setCount] = useState(0)
+  
+  const handleClickAsync = () => {
+    setTimeout(function delay() {
+      setCount(count => count + 1)
+    }, 3000)
+  }
+  
+  return (
+  	<div>
+    	{count}
+      <button onClick={handleClickAsync}>Increase async</button>
+    </div>
+  )
+}
+```
+
+现在 `setCount(count => count + 1)` 在 `delay()` 中正确更新计数状态。React 确保将最新状态值作为参数提供给更新状态函数，这时闭包的问题解决了。
+
+[打开演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-async-fixed-5y2o8)，快速单击按钮。 延迟过去后，`count` 能正确表示点击次数。
