@@ -209,3 +209,56 @@ function Bulbs() {
 - `[state, setState] = useState(initialValue)` 返回一个包含 2 个元素的数组：状态值和状态函数。
 - 使用新值调用状态更新器函数 `setState(newState)` 更新状态。或者，可以使用一个回调 `setState(prev => next)` 来调用状态更新器，该回调将返回基于先前状态的新状态。
 - 调用状态跟新器后，React 确保重新渲染组件，以使新状态变为当前状态。
+
+### 2. 多种状态
+
+通过调用 `useState()`，一个函数组件可以拥有多个状态。
+
+```jsx
+function MyComponent() {
+  const [state1, setState1] = useState(initial1)
+  const [state2, setState2] = useState(initial2)
+  const [state3, setState3] = useState(initial3)
+}
+```
+
+需要注意的是，要确保对 `useState()` 的多次调用在渲染之间始终保持相同的顺序（后面会讲）。
+
+我们添加一个按钮 `添加灯泡`，并添加一个新状态来保存灯泡数量，单击该按钮时，将添加一个新灯泡。
+
+新的状态 `count` 包含灯泡的数量，初始值为 `1` ：
+
+```jsx
+import React, { useState } from 'react';
+
+function Bulbs() {
+  const [on, setOn] = useState(false)
+  const [count, setCount] = useState(1)
+  
+  const lightSwitch = () => setOn(on => !on)
+  const addBulbs = () => setCount(count => count + 1)
+  
+  const bulb = <div className={on ? 'bulb-on' : 'bulb-off'} />
+  const bubls = Array(count).fill(bulb)
+  
+  return (
+  	<>
+    	<div className='bulbs'>{bulbs}</div>
+    	<button onClick={lightSwitch}>开/关</button>
+    	<button onClick={addBulbs}>添加灯泡</button>
+    </>
+  )      
+}
+```
+
+[打开演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-multiple-states-j8o78)，然后单击添加灯泡按钮：灯泡数量增加，单击开/关按钮可打开/关闭灯泡。
+
+![](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/11/18/16e7bd2519a9006b~tplv-t2oaga2asx-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+- `[on, setOn] = useState(false)`  管理开/关状态
+- `[count, setCount] = useState(1)` 管理灯泡数量。
+
+多个状态可以在一个组件中正确工作。
+
+
+
