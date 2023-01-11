@@ -260,5 +260,22 @@ function Bulbs() {
 
 多个状态可以在一个组件中正确工作。
 
+### 3. 状态的延迟初始化
 
+每当 React 重新渲染组件时，都会执行 `useState(initialState)`。如果初始状态是原始值（数字、布尔值等），则不会有性能问题。
+
+当初始状态需要昂贵的性能方面的操作时，可以通过 `useState(computeInitialState)` 提供一个函数来使用状态的延迟初始化，如下所示：
+
+```jsx
+function MyComponent({ bigJsonData }) {
+  const [value, setValue] = useState(function getInitialState() {
+    const object = JSON.parse(bigJsonData) // expensive operation
+    return object.initialValue
+  })
+  
+  // ...
+}
+```
+
+`getInitialState()` 仅在初始渲染时执行一次，以获得初始状态。在以后的组件渲染中，不会再调用 `getInitialState()`，从而跳过昂贵的操作。
 
