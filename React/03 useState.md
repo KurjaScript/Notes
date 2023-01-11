@@ -494,3 +494,49 @@ function FavoriteMovies() {
 还有一个好处：可以将 `reducer` 提取到一个单独的模块中，并在其他组件中重用它。另外，即使没有组件，也可以对 `reducer` 进行单元测试。
 
 这就是关注点分离的威力：组件渲染 UI 并响应事件，而 `reducer` 执行状态操作。
+
+#### 4.4 状态 vs 引用
+
+考虑这样一个场景：我们想要计算组件渲染的次数。
+
+一种简单的方法是初始化 `countRender` 状态，并在每次渲染时更新它（使用 `useEffect()` Hook）
+
+```jsx
+import React, { useState, useEffect } from 'react';
+
+function CountMyRenders() {
+  const [countRender, setCountRender] = useState(0)
+  
+  useEffect(function afterRender() {
+    setCountRender(countRender => countRender + 1)
+  })
+  
+  return (
+  	<div>I've renderd{countRender} times</div>
+  )
+}
+```
+
+`useEffect()` 在每次渲染后调用 `afterRender()` 回调。但是一旦 `countRender` 状态更新，组件就会重新渲染。这将触发另一个状态更新和另一个重新渲染，以此类推。
+
+可变引用 `useRef()` 保存可变数据，这些数据在更改时不会触发重新渲染，使用可变的引用改造一下  `<CountMyRenders>` ：
+
+```jsx
+import React, { useRef, useEffect } from 'react';
+
+function CountMyRenders() {
+  const countRenderRef = useRef(1)
+  
+  useEffect(function afterRender() {
+    countRenderRef.current++
+  })
+  
+  return (
+  	<div>I've rendered {countRenderRef.current} times.</div>
+  )
+}
+```
+
+[打开演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-vs-useref-6d8k7)并单击几次按钮来触发重新渲染。
+
+每次渲染组件时，`countRenderRef` 可变引用的值都会使 `countRenderRef.current++` 递增。重要的是，更改不会触发组件的重新渲染。
