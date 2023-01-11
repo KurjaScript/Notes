@@ -77,3 +77,25 @@ function Example() {
 **为什么在组件内部调用 useEffect ？**将 `useEffect` 放在组件内部让我们可以在 effect 中直接访问 `count` state 变量（或其他 props）。我们不需要特殊的 API 来读取它 —— 它已经保存在函数作用域中。Hook 使用了 JavaScript 的闭包机制，而不用在 JavaScript 已经提供了解决方案的情况下，还引入特定的 React API。
 
 **useEffect 会在每次渲染后都执行吗？**是的，默认情况下，它的第一次渲染之后和每次更新之后都会执行。（我们稍后会谈到如何控制它。）你可能会更容易接受 effect 发生在“渲染”之后这种概念，不再用去考虑“挂载”还是“更新”。React 保证了每次运行 effect 的同时，DOM 都已经更新完毕。
+
+#### 2.3 详细说明
+
+现在我们已经对 effect 有了大致了解，下面这些代码应该不难看懂了：
+
+```jsx
+function Example() {
+  const [count, setCount] = useState(0)
+  
+  useEffect(() => {
+    document.title = `You clicked ${count} tiems`
+  })
+}
+```
+
+我们声明了 `count` state 变量，并告诉 React 我们需要使用 effect。紧接着传递函数给 `useEffect` Hook。此函就是我们的 effect。然后使用 `document.title`浏览器 API 设置 document 的 title。我们可以在 effect 中获取到最新的 `count` 值，因为它在函数的作用域内。当 React 渲染组件时，会保存已使用的 effect，并在更新完 DOM 后执行它。这个过程在每个=次渲染都会发生，包括首次渲染。
+
+经验丰富的 JavaScript 开发者可能会注意到，传递给 `useEffect` 的函数在每次渲染中都会有所不同，这是刻意为之的。事实上这正是我们可以在 effect 中获取最新的 `count` 的值，而不用担心其过期的原因。**每次我们重新渲染，都会生成新的 effect，替换掉之前的。**某种意义上讲，effect 更像是渲染结果的一部分 —— 每个 effect “属于” 一次特定的渲染。
+
+> **提示：**
+>
+> 与 componentDidMount 或 componentDidUpdate 不同，使用 useEffect 调度的 effect 不会阻塞浏览器更新屏幕，这让你的应用看起来响应更快。大多数情况下，effect 不需要同步地执行。在个别情况下（例如测量布局），有单独的 `useLayoutEffect` Hook 供你使用，其 API 与 useEffect 相同。
