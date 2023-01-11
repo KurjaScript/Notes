@@ -540,3 +540,25 @@ function CountMyRenders() {
 [打开演示](https://link.juejin.cn/?target=https%3A%2F%2Fcodesandbox.io%2Fs%2Freact-usestate-vs-useref-6d8k7)并单击几次按钮来触发重新渲染。
 
 每次渲染组件时，`countRenderRef` 可变引用的值都会使 `countRenderRef.current++` 递增。重要的是，更改不会触发组件的重新渲染。
+
+### 5. 总结
+
+要使函数组件有状态，请在组件的函数体中调用 `useState()`.
+
+`useState(initialState)` 的第一个参数是初始状态。返回的数组有两项:当前状态和状态更新函数。
+
+```jsx
+const [state, setState] = useState(initialState)
+```
+
+使用 `setState(newState)` 来更新状态值。如果需要根据先前的状态更新状态，可使用回调函数 `setState(prevState => newState)` 。
+
+在单个组件中可以有多个状态：调用多次 `useState()` 。
+
+当初始状态开销很大时，延迟初始化很方便。使用计算初始状态的回调调用 `useState(computeInitialState)` ，并且此回调仅在初始渲染时执行一次。
+
+必须确保使用 `useState()` 遵循 Hook 规则。
+
+当闭包捕获过时的状态变量时，就会出现过时状态的问题。可以通过使用一个回调来更新状态来解决这个问题，这个回调会根据先前的状态来计算新的状态。
+
+最后，你将使用 `useState()` 来管理一个简单的状态。为了处理更复杂的状态，一个更好的选择是使用 `useReducer()` Hook。
