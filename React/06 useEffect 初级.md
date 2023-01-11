@@ -99,3 +99,85 @@ function Example() {
 > **提示：**
 >
 > 与 componentDidMount 或 componentDidUpdate 不同，使用 useEffect 调度的 effect 不会阻塞浏览器更新屏幕，这让你的应用看起来响应更快。大多数情况下，effect 不需要同步地执行。在个别情况下（例如测量布局），有单独的 `useLayoutEffect` Hook 供你使用，其 API 与 useEffect 相同。
+
+### 3. 需要清除的 effect
+
+有一些副作用是需要清除的，例如**订阅外部数据源**。这种情况下，清除工作是非常重要的，可以防止引起内存泄露！现在来比较一下如何用 class 和 Hook 来实现。
+
+#### 3.1 使用 Class 的示例
+
+在 React class 中，你通常会在 `componentDidMount` 中设置订阅，并在 `componentWillUnmount` 中清除它。例如，假设我们有一个 `ChatAPI` 模块，它允许我们订阅好友的在线状态。以下是我们如何使用 class 订阅和显示该状态：
+
+```jsx
+class FriendStatus extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { isOnline: null }
+    this.handleStatusChange = this.handleStatusChange.bind(this)
+  }
+  componentDidMount() {
+    ChatAPI.subscribeToFriendStatus(
+    	this.props.friend.id,
+      this.handleStatusChange
+    )
+  }
+  componentWillUnmount() {
+    ChatAPI.unsubscribeFromFriendStatus(
+      this.props.friend.id,
+      this.handleStatusChange
+    );
+  }
+  handleStatusChange(status) {
+    this.setState({
+      isOnline: status.isOnline
+    })
+  }
+  
+  render() {
+    if (this.state.isOnline === null) {
+      return 'Loading...'
+    }
+    return this.state.isOnline ? 'Online' : 'Offline'
+  }
+}
+```
+
+`componentDidMount` 和 `componentWillUnmount` 之间相互对应。使用声明周期函数迫使我们拆分这些逻辑代码，即使这两部分代码都作用于相同的副作用。
+
+> 这个示例还需要编写 componentDidUpdate 方法才能保证完全正确。先暂时忽略这一点，后续会补充说明。
+
+#### 3.2 使用 Hook 的示例
+
+如何使用 Hook 编写这个组件，你可能认为需要单独的 effect 来执行清除操作。但由于添加和删除订阅的代码的紧密性，所以 `useEffect` 的设计是在同一个地方执行。**如果你的 effect 返回一个函数，React 将会在执行清除操作时调用它**：
+
+```jsx
+import React, { useState, useEffect } from 'react';
+
+function FriendStatus(prop) {
+  const [isOnline, setIsOnline] = useState(null)
+  
+  useEffect(() => {
+    function handleStatusChange(status) {
+      setIsOnline(status.isOnline)
+    }
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange)
+    // Specify how to clean up after this effect
+    return function cleanup() {
+      ChatAPI.unsubscribeFromFriendStatus(props.froend.id, handleStatusChange)
+    }
+  })
+  
+  if (isOnline === null) {
+    return 'Loading...'
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
+```
+
+**为什么要在 effect 中返回一个函数？**这是 effect 可选的清除机制。每个 effect 都可以返回一个清除函数。如此可以将添加和移除订阅的逻辑放在一起。它们都属于 effect 的一部分。
+
+**React 何时清除 effect？React 会在组件卸载的时候执行清除操作。**正如之前学到的，effect 在每次渲染的时候都会执行。这就是为什么 React 会在执行当前 effect 之前对上一个 effect 进行清除。我们稍后将讨论为什么这将有助于避免 bug 以及如何在遇到性能问题时跳过此行为。
+
+> **注意**
+>
+> 并不是必须为 effect 中返回的函数命名。这里我们将其命名为 cleanup 是为了表明此函数的目的，但其实也可以返回一个箭头函数或者另起一个别的名字。
