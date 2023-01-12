@@ -81,4 +81,42 @@ fetch(url, {
 
 'name=test' 的格式，而 jquery ajax 已经封装好了，所以 fetch 并不是开箱即用的。另外，fetch 还不支持超时控制。哎呀，感觉 fetch 好垃圾，还需继续成长。
 
-### 
+### 3. axios
+
+axios 也是对原生 XHR 的封装。它有以下几大特性：
+
+- 可以在 node.js 中使用
+- 提供了并发请求的接口
+- 支持 Promise API
+
+简单使用
+
+```js
+axios({
+  method: 'GET',
+  url: url,
+})
+.then(res => {console.log(res)})
+.catch(err => {console.log(err)})
+```
+
+写法有很多中，可以自行查看文档
+
+**并发请求**
+
+```js
+function getUserAccount() {
+  return axios.get('/user/12345')
+}
+
+function getUserPermissions() {
+  return axios.get('/user/12345/permission')
+}
+
+axios.all([getUserAccount(), getUserPermissions()])
+	.then(axios.spread(function (acct, perms) {
+  	// Both request are now complete
+	}))
+```
+
+axios 体积比较小，也没有 fetch 的各种问题。这些都是基础用法，深入了解还要在实战中多多历练。
