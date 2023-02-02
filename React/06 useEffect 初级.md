@@ -1,5 +1,46 @@
 ## useEffect 初级
 
+useEffect 用于处理组件中的 effect，通常用于**请求数据**，**事件处理**，**订阅**等相关操作。
+
+### 1. useEffect 的第二个参数
+
+**当 useEffect 没有第二个参数时**
+
+![img](https://upload-images.jianshu.io/upload_images/19442465-8ab4650f824344d1.gif?imageMogr2/auto-orient/strip|imageView2/2/w/336/format/webp)
+
+```tsx
+const [count, setCount] = useState(0)
+const [isLoading, setIsLoading] = useState(false)
+
+useEffect(() => {
+  setIsLoading(true)
+  setTimeout(() => {
+    setIsLoading(false)
+  }, 1000)
+  return () => {}
+})
+
+function handleClick() {
+  setCount(count + 1)
+}
+
+return (
+	<React.Fragment>
+    {isLoading ? (
+      <div>Loading...</div>
+    ): (
+      <div>
+        <button onClick={handleClick}>Click me</button>
+        <p>You click me {count} times!</p>
+      </div>
+    )}
+)
+```
+
+通过这个例子可以看出来 useEffect 没有第二个参数时不停地在调用。
+
+
+
 ### 1. 副作用
 
 **数据获取，设置订阅以及手动更改 React 组件中的 DOM 都属于副作用。**
