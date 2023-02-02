@@ -1,5 +1,9 @@
 ## useEffect 初级
 
+### 1. 什么是 Effect 
+
+effect（副作用）是 react 函数组件用来替代生命周期的函数。我们可以把 `useEffect Hook` 看做 `componentDidMount`, `componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合。
+
 useEffect 用于处理组件中的 effect，通常用于**请求数据**，**事件处理**，**订阅**等相关操作。
 
 ### 1. useEffect 的第二个参数
@@ -53,6 +57,22 @@ useEffect(() => {
 ```
 
 通过这个例子可以看出来 useEffect 在调用一次后就不再调用。
+
+**当 useEffect 第二个参数为变量时**
+
+![img](https://upload-images.jianshu.io/upload_images/19442465-6058f89217b58389.gif?imageMogr2/auto-orient/strip|imageView2/2/w/336/format/webp)
+
+```tsx
+useEffect(() => {
+  setIsLoading(true)
+  setTimeout(() => {
+    setIsLoading(false)
+  }, 1000)
+  return () => {}
+}, [count])
+```
+
+
 
 ### 1. 副作用
 
