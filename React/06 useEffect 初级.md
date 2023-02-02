@@ -39,7 +39,20 @@ return (
 
 通过这个例子可以看出来 useEffect 没有第二个参数时不停地在调用。
 
+**当 useEffect 第二个参数为空数组时**
 
+![img](https://upload-images.jianshu.io/upload_images/19442465-26bc6a4a094e4207.gif?imageMogr2/auto-orient/strip|imageView2/2/w/336/format/webp)
+
+```tsx
+useEffect(() => {
+  setIsLoading(true)
+  setTimeout(() => {
+    setIsLoading(false)
+  }, 1000)
+}, [])
+```
+
+通过这个例子可以看出来 useEffect 在调用一次后就不再调用。
 
 ### 1. 副作用
 
