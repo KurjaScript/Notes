@@ -115,6 +115,24 @@ export default function App() {
 
 ![img](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ab4f0917ab474e03b637a36379209a47~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp)
 
+#### 2.3.2 模拟 componentDidUpdate
+
+当我们把上面例子改成
+
+```tsx
+React.useEffect(() => {
+  console.log("state 发生变化了")
+}, [state]) // 这里传递了数组，里面是监控的数据
+```
+
+如果 state 发生了变化，就会执行此段函数。需要注意的是，**useEffect 总是后于 render  函数的，所以不管怎样，都会通过 render 函数把页面更新完成，才会执行 useEffect 内的代码。**
+
+![img](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c7d0247150a4f3dbb7ef7a3cc5d8405~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp)
+
+> tips: 上面的代码实际上并不能模拟 componentDidUpdate，因为当 state 第一次初始化时，也会执行 Effect 内部的代码
+
+**如果要监听所有数据，可以不传第二个参数。**
+
 
 
 ### 1. 副作用
