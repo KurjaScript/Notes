@@ -88,6 +88,33 @@ useEffect(() => {
 }, [count])
 ```
 
+#### 2.3 示例
+
+##### 2.3.1 模拟 componentDidMount
+
+```tsx
+export default function App() {
+  const [state, setState] = useState(0)
+  useEffect(() => {
+    console.log("第一次 render ")
+  },[]) // 这里传递了空数组
+  return (
+  	<div className="App">
+    	<h1>{state}</h1>
+      <button 
+        onClick={() => {
+          setState((x) => x + 1)
+        }}
+      >按钮+1</button>
+    </div>
+  )
+}
+```
+
+上面例子中，我们在第二个参数中传递了数组，这个数组表示让 react 监控数组内部的数据，当其发生变化的时候，执行 `useEffect` 函数。当传递的是空数组时，就只会触发第一次渲染。
+
+![img](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ab4f0917ab474e03b637a36379209a47~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp)
+
 
 
 ### 1. 副作用
