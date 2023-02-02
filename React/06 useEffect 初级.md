@@ -2,13 +2,29 @@
 
 ### 1. 什么是 Effect 
 
-effect（副作用）是 react 函数组件用来替代生命周期的函数。我们可以把 `useEffect Hook` 看做 `componentDidMount`, `componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合。
+`effect`（副作用）是 react 函数组件用来替代生命周期的函数。我们可以把 `useEffect Hook` 看做 `componentDidMount`, `componentDidUpdate` 和 `componentWillUnmount` 这三个函数的组合。
 
-useEffect 用于处理组件中的 effect，通常用于**请求数据**，**事件处理**，**订阅**等相关操作。
+`useEffect` 用于处理组件中的 `effect`，通常用于**请求数据**，**事件处理**，**订阅**等相关操作。
 
-### 1. useEffect 的第二个参数
+### 2. useEffect 用法
 
-**当 useEffect 没有第二个参数时**
+它的参数如下：`useEffect(callback[,[]])`
+
+第一个参数接受一个 `callback` 回调函数，里面可以写执行业务代码。
+
+第二个参数课省略，它接受一个数组，可以是空数组，也包含了 `state` 数据。
+
+#### 2.1 说明
+
+当不传递第二个参数时，每次 render 都会执行一遍 `callback` 函数，相当于包含第一遍 `render` 的 `componentDidUpdate` ;
+
+当传递第二个参数且是空数组时，只有第一次 render 才会执行 callback，类似于 `componentDidMount` ;
+
+不管是否传递第二个参数，只要在 `callback` 中 return 一个函数，就相当于告诉 react 此组件**挂掉之前执行**什么操作，类似于 `componentWillUnmount` 。
+
+#### 2.2 useEffect 的第二个参数
+
+##### 2.2.1 当 useEffect 没有第二个参数时
 
 ![img](https://upload-images.jianshu.io/upload_images/19442465-8ab4650f824344d1.gif?imageMogr2/auto-orient/strip|imageView2/2/w/336/format/webp)
 
@@ -43,7 +59,7 @@ return (
 
 通过这个例子可以看出来 useEffect 没有第二个参数时不停地在调用。
 
-**当 useEffect 第二个参数为空数组时**
+##### 2.2.2 当 useEffect 第二个参数为空数组时
 
 ![img](https://upload-images.jianshu.io/upload_images/19442465-26bc6a4a094e4207.gif?imageMogr2/auto-orient/strip|imageView2/2/w/336/format/webp)
 
@@ -58,7 +74,7 @@ useEffect(() => {
 
 通过这个例子可以看出来 useEffect 在调用一次后就不再调用。
 
-**当 useEffect 第二个参数为变量时**
+##### 2.2.3 当 useEffect 第二个参数为变量时
 
 ![img](https://upload-images.jianshu.io/upload_images/19442465-6058f89217b58389.gif?imageMogr2/auto-orient/strip|imageView2/2/w/336/format/webp)
 
