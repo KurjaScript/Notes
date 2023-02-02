@@ -133,7 +133,41 @@ React.useEffect(() => {
 
 **如果要监听所有数据，可以不传第二个参数。**
 
+##### 2.3.3 模拟 componentWillUnMount
 
+在 `useEffect` 参数的 `callback` 函数中直接 return 一个函数，就相当于告诉 react，我要在这个组件死之前执行一段代码。
+
+```tsx
+import React from "react";
+export default function App() {
+  const [state, setState] = React.useState(0);
+
+  return (
+    <div className="App">
+      {state === 1 ? null : <Child />}
+      <h1>{state}</h1>
+      <button
+        onClick={() => {
+          setState((x) => x + 1);
+        }}
+      >
+        按钮+1
+      </button>
+    </div>
+  );
+}
+const Child = () => {
+  React.useEffect(() => {
+  	console.log("这个child组件第一次render了")//这里是第一次进入时执行的代码
+    return () => { // **注意看这里的代码**
+      console.log("这个 div 灭亡前的代码");
+    };
+  }, []);
+  return <div>孩子组件</div>;
+};
+```
+
+上面的代码设置了一个 `button` ，当点击时，触发 `state + 1` ，然后页面不再渲染 `Child` 组件，就相当于删除了 `Child` 组件，在 `Child` 灭亡之前，会执行 `console.log("这个 div 灭亡前的代码")`
 
 ### 1. 副作用
 
