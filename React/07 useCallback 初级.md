@@ -130,3 +130,44 @@ export default function App() {
 
 可以点击多次 Button2 查看变化，会发现 Button2 后面值只会改变一次。因为上述函数内的 `count2` 永远都是 `0` ,这就意味着每次都是 `0 + 1` ，Button 所接受的 `count` props，也只会从 `0` 变成 `1` 且一直都将是 `1`，而且 `handleClickButton2` 也因没有依赖不会返回新的方法，就导致 Button 组件只会因 `count` 改变而更新一次。
 
+上述提到的是不更新所带来的问题，接下来在看一个频繁更新所带来的问题。
+
+```tsx
+const [text, setText] = useState('')
+
+const handleSubmit = useCallback(() => {
+  // ...
+}, [text])
+
+return (
+  <form>
+  	<input value={text} onChange={(e) => setText(e.target.value)} />
+    <OtherForm onSubmit={handleSubmit} />
+  </form>
+)
+```
+
+上述例子中我们可以看到 `handleSubmit` 会依赖 `text` 的更新而去更新，在 `input` 的使用中 `text` 的变化肯定是相当频繁的，假如 `OtherForm` 是一个很大的组件，必须要进行优化这个时候可以使用 `useRef` 来帮忙。
+
+```tsx
+const textRef = useRef('')
+const [text, setText] = useState('')
+
+const handleSubmit = useCallback(() => {
+  console.log(textRef.current)
+  // ...
+}, [textRef])
+
+return (
+  <form>
+  	<input value={text} onChange={(e) => {
+        const { value } = e.target
+        setText(value)
+        textRef.current = value
+      }} />
+    <OtherForm onSubmit={handleSubmit} />
+  </form>
+)
+```
+
+使用 `useRef` 可以生成一个变量让其在组件每个生命周期内都能访问到，且 `handleSubmit` 并不会因为 `text` 的更新而更新，也就不会让 `OtherForm` 多次渲染。
