@@ -171,3 +171,30 @@ return (
 ```
 
 使用 `useRef` 可以生成一个变量让其在组件每个生命周期内都能访问到，且 `handleSubmit` 并不会因为 `text` 的更新而更新，也就不会让 `OtherForm` 多次渲染。
+
+初学 useCallback 可能有这样的疑问，是否应该把所有的方法都用 useCallback 包一层？先说答案是：**不要把所有方法都包上 useCallback**。以下
+
+```tsx
+const [count1, setCount1] = useState(0)
+const [count2, setCount2] = useState(0)
+
+const handleClickButton1 = () => {
+  setCount1(count1 + 1)
+}
+const handleClickButton2 = useCallback(() => {
+  setCount2(count2 + 1)
+}, [count2]) 
+
+return (
+	<>
+  	<button onClick={handleClickButton1}>button1</button>
+  	<button onClick={handleClickButton2}>button2</button>
+  </>
+)
+```
+
+上面这种写法在当前组件重新渲染时会声明一个新的 `handleClickButton1` 函数，下面 `useCallback` 里面的函数也会声明一个新的函数，被传入到 `useCallback` 中，尽管这个函数有可能因为 inputs 没有发生改变不会返回到 `handleClickButton2` 变量上。
+
+那么在我们这种情况它返回新的函数和老的函数也都一样，因为下面 `<button>` 都会被渲染一下，反而使用 `useCallback` 后每次执行到这里内部都要对比 `inputs` 是否变化，还有存储之前的函数，性能消耗更大了。
+
+> useCallback 是要配合子组件的 shouldComponentUpdate 或者 React.memo 一起来使用的，否则就是反向优化。
